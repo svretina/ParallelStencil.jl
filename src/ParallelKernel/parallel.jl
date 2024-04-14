@@ -192,8 +192,6 @@ function parallel_kernel(caller::Module, package::Symbol, numbertype::DataType, 
         body = (numbertype != NUMBERTYPE_NONE) ? literaltypes(numbertype, body) : body
         body = literaltypes(int_type, body) # TODO: the size function always returns a 64 bit integer; the following is not performance efficient: body = cast(body, :size, int_type)
     elseif (package == PKG_THREADS)
-        println("pkg_threads")
-        println(indices,ranges,body)
         body = add_loop(indices, ranges, body)
         body = (numbertype != NUMBERTYPE_NONE) ? literaltypes(numbertype, body) : body
     else
@@ -468,7 +466,6 @@ function add_loop(indices::Array, ranges::Array, block::Expr)
             end
         end
     elseif ndims == 3
-        println("used @batch")
         ix, iy, iz = indices
         ix_ps, iy_ps, iz_ps = INDICES
         ix_ps_assignment = (ix_ps!=ix) ? :($ix_ps = $ix) : :(begin end)  # Note: this assignement is only required in parallel_indices kernels, where the user chooses the index names freely.
