@@ -466,6 +466,7 @@ function add_loop(indices::Array, ranges::Array, block::Expr)
             end
         end
     elseif ndims == 3
+        println("used @batch")
         ix, iy, iz = indices
         ix_ps, iy_ps, iz_ps = INDICES
         ix_ps_assignment = (ix_ps!=ix) ? :($ix_ps = $ix) : :(begin end)  # Note: this assignement is only required in parallel_indices kernels, where the user chooses the index names freely.
@@ -484,7 +485,6 @@ function add_loop(indices::Array, ranges::Array, block::Expr)
                 end
             end
         end
-        println("used @batch")
     end
 end
 
