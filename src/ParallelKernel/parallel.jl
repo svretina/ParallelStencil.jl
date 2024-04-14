@@ -1,3 +1,5 @@
+using Polyester
+
 const PARALLEL_DOC = """
     @parallel kernelcall
     @parallel ∇=... kernelcall
@@ -427,7 +429,6 @@ function add_threadids(indices::Array, ranges::Array, block::Expr)
     end
 end
 
-using Polyester
 function add_loop(indices::Array, ranges::Array, block::Expr)
     if !(length(ranges)==3) @ModuleInternalError("ranges must be an Array or Tuple of size 3") end # E.g. (5:28,5:28,1:1) in 2D.
     range_x, range_y, range_z = ranges
