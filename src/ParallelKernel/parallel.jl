@@ -484,6 +484,7 @@ function add_loop(indices::Array, ranges::Array, block::Expr)
                 end
             end
         end
+        println("used @batch")
     end
 end
 
