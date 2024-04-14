@@ -365,7 +365,6 @@ end
 
 
 ## FUNCTIONS TO ADD THREAD-IDS / LOOPS IN KERNELS
-
 function add_threadids(indices::Array, ranges::Array, block::Expr)
     if !(length(ranges)==3) @ModuleInternalError("ranges must be an Array or Tuple of size 3.") end # E.g. (5:28,5:28,1:1) in 2D. Note that for simplicity for the users and developers, 1D and 2D problems are always expressed like 3D problems...
     check_thread_bounds = true
@@ -428,6 +427,7 @@ function add_threadids(indices::Array, ranges::Array, block::Expr)
     end
 end
 
+using Polyester
 function add_loop(indices::Array, ranges::Array, block::Expr)
     if !(length(ranges)==3) @ModuleInternalError("ranges must be an Array or Tuple of size 3") end # E.g. (5:28,5:28,1:1) in 2D.
     range_x, range_y, range_z = ranges
@@ -441,7 +441,8 @@ function add_loop(indices::Array, ranges::Array, block::Expr)
         quote
             $iz_ps_assignment
             $iy_ps_assignment
-            Base.Threads.@threads for $ix in $range_x
+            # Base.Threads.@threads for $ix in $range_x
+            Polyester.@batch for $ix in $range_x
                 $ix_ps_assignment
                 $block
             end
@@ -454,7 +455,8 @@ function add_loop(indices::Array, ranges::Array, block::Expr)
         iz_ps_assignment = :($iz_ps = $range_z[1])
         quote
             $iz_ps_assignment
-            Base.Threads.@threads for $iy in $range_y
+            # Base.Threads.@threads for $iy in $range_y
+            Polyester.@batch for $iy in $range_y
                 $iy_ps_assignment
                 for $ix in $range_x
                     $ix_ps_assignment
@@ -469,7 +471,8 @@ function add_loop(indices::Array, ranges::Array, block::Expr)
         iy_ps_assignment = (iy_ps!=iy) ? :($iy_ps = $iy) : :(begin end)  # ...
         iz_ps_assignment = (iz_ps!=iz) ? :($iz_ps = $iz) : :(begin end)  # ...
         quote
-            Base.Threads.@threads for $iz in $range_z
+            # Base.Threads.@threads for $iz in $range_z
+            Polyester.@batch for $iz in $range_z
                 $iz_ps_assignment
                 for $iy in $range_y
                     $iy_ps_assignment

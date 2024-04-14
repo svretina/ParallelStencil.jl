@@ -46,8 +46,8 @@ end
     # Time loop
     for it = 1:nt
         if (it==11)  global wtime0 = Base.time()  end
-        @parallel compute_V!(Vx, Vy, P, dt, ρ, dx, dy)
-        @parallel compute_P!(P, Vx, Vy, dt, k, dx, dy)
+        @time @parallel compute_V!(Vx, Vy, P, dt, ρ, dx, dy)
+        @time @parallel compute_P!(P, Vx, Vy, dt, k, dx, dy)
         t = t + dt
         # Visualisation
         if mod(it,nout)==0
