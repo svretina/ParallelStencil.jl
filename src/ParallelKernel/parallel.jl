@@ -443,7 +443,7 @@ function add_loop(indices::Array, ranges::Array, block::Expr)
             $iz_ps_assignment
             $iy_ps_assignment
             # Base.Threads.@threads for $ix in $range_x
-            Polyester.@batch for $ix in $range_x
+            Polyester.@batch stride=true for $ix in $range_x
                 $ix_ps_assignment
                 $block
             end
@@ -457,7 +457,7 @@ function add_loop(indices::Array, ranges::Array, block::Expr)
         quote
             $iz_ps_assignment
             # Base.Threads.@threads for $iy in $range_y
-            Polyester.@batch for $iy in $range_y
+            Polyester.@batch stride=true for $iy in $range_y
                 $iy_ps_assignment
                 for $ix in $range_x
                     $ix_ps_assignment
@@ -473,7 +473,7 @@ function add_loop(indices::Array, ranges::Array, block::Expr)
         iz_ps_assignment = (iz_ps!=iz) ? :($iz_ps = $iz) : :(begin end)  # ...
         quote
             # Base.Threads.@threads for $iz in $range_z
-            Polyester.@batch for $iz in $range_z
+            Polyester.@batch stride=true for $iz in $range_z
                 $iz_ps_assignment
                 for $iy in $range_y
                     $iy_ps_assignment
